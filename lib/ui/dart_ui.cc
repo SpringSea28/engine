@@ -42,6 +42,8 @@
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_args.h"
 #include "third_party/tonic/logging/dart_error.h"
+#include "flutter/lib/ui/barcode/barcode.h"
+#include "flutter/lib/ui/barcode/barcode_paragraph_builder.h"
 
 #ifdef IMPELLER_ENABLE_3D
 #include "flutter/lib/ui/painting/scene/scene_node.h"
@@ -85,6 +87,7 @@ typedef CanvasPath Path;
   V(PictureRecorder::Create)                                       \
   V(SceneBuilder::Create)                                          \
   V(SemanticsUpdateBuilder::Create)                                \
+  V(sojet::barcode::Barcode::Create)                                               \
   /* Other */                                                      \
   V(FontCollection::LoadFontFromList)                              \
   V(ImageDescriptor::initEncoded)                                  \
@@ -309,7 +312,12 @@ typedef CanvasPath Path;
   V(SemanticsUpdateBuilder, updateCustomAction)     \
   V(SemanticsUpdateBuilder, updateNode)             \
   V(SemanticsUpdate, dispose)                       \
-  V(Vertices, dispose)
+  V(Vertices, dispose)                              \
+  V(sojet::barcode::Barcode,encode)                                 \
+  V(sojet::barcode::Barcode,getErrorInfo)                           \
+  V(sojet::barcode::Barcode,setCanvas)                              \
+  V(sojet::barcode::Barcode,setTextStyle)                           \
+  V(sojet::barcode::Barcode,dispose)
 
 #ifdef IMPELLER_ENABLE_3D
 

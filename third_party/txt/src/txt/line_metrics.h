@@ -62,6 +62,14 @@ class LineMetrics {
   // Zero indexed line number.
   size_t line_number = 0;
 
+  // add by sojet start >>>
+  double text_width = 0;
+  double text_left = 0;
+  double text_top	 = 0;
+  double text_right  = 0;
+  double text_bottom = 0;
+  // <<< add by sojet end
+
   // Mapping between text index ranges and the FontMetrics associated with
   // them. The first run will be keyed under start_index. The metrics here
   // are before layout and are the base values we calculate from.

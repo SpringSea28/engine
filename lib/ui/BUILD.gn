@@ -19,13 +19,22 @@ source_set("ui") {
     # behavior). This can result in surprising and difficult to debug behavior
     # for Flutter application developers, so it should be explicitly handled
     # via SafeNarrow.
-    "-Wimplicit-float-conversion",
+  # add by sojet start >>>
+  #    "-Wimplicit-float-conversion",
+    "-Wno-implicit-float-conversion"
+    # <<< add by sojet end
   ]
 
   if (is_win) {
     # This causes build failures in third_party dependencies on Windows.
     cflags += [ "-Wno-implicit-int-float-conversion" ]
   }
+
+  include_dirs = [
+  # 添加 Skia 头文件路径
+    "//flutter/third_party/skia/include/core",
+    "//flutter/third_party/zint"
+  ]
 
   sources = [
     "compositing/scene.cc",
@@ -158,6 +167,41 @@ source_set("ui") {
     "window/pointer_data_packet_converter.h",
     "window/viewport_metrics.cc",
     "window/viewport_metrics.h",
+    # add by sojet start >>>
+    "skiabarcode/BarcodeCommon.h",
+    "skiabarcode/Codabar.cpp",
+    "skiabarcode/Codabar.h",
+    "skiabarcode/Code25.cpp",
+    "skiabarcode/Code25.h",
+    "skiabarcode/Code39.cpp",
+    "skiabarcode/Code39.h",
+    "skiabarcode/Code93.cpp",
+    "skiabarcode/Code93.h",
+    "skiabarcode/Code128.cpp",
+    "skiabarcode/Code128.h",
+    "skiabarcode/DataMatrix.cpp",
+    "skiabarcode/DataMatrix.h",
+    "skiabarcode/Ean.cpp",
+    "skiabarcode/Ean.h",
+    "skiabarcode/GridMatrix.cpp",
+    "skiabarcode/GridMatrix.h",
+    "skiabarcode/MaxiCode.cpp",
+    "skiabarcode/MaxiCode.h",
+    "skiabarcode/Pdf417.cpp",
+    "skiabarcode/Pdf417.h",
+    "skiabarcode/QRCode.cpp",
+    "skiabarcode/QRCode.h",
+    "skiabarcode/SkiaBarcode.cpp",
+    "skiabarcode/SkiaBarcode.h",
+    "skiabarcode/UPC.cpp",
+    "skiabarcode/UPC.h",
+    "barcode/barcode.cc",
+    "barcode/barcode.h",
+    "barcode/barcode_paragraph_builder.cc",
+    "barcode/barcode_paragraph_builder.h",
+    "barcode/barcode_style.cc",
+    "barcode/barcode_style.h"
+    # <<< add by sojet end
   ]
 
   public_configs = [ "//flutter:config" ]
@@ -184,6 +228,7 @@ source_set("ui") {
     "//flutter/third_party/rapidjson",
     "//flutter/third_party/tonic",
     "//third_party/zlib:zlib",
+    "//flutter/third_party/zint:libzint"
   ]
 
   if (impeller_supports_rendering) {

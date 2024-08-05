@@ -191,7 +191,7 @@ tonic::Float64List Paragraph::computeLineMetrics() const {
   // boxes.size() groups of 9 which are the line metrics
   // properties
   tonic::Float64List result(
-      Dart_NewTypedData(Dart_TypedData_kFloat64, metrics.size() * 9));
+      Dart_NewTypedData(Dart_TypedData_kFloat64, metrics.size() * 14));
   uint64_t position = 0;
   for (uint64_t i = 0; i < metrics.size(); i++) {
     const txt::LineMetrics& line = metrics[i];
@@ -207,6 +207,11 @@ tonic::Float64List Paragraph::computeLineMetrics() const {
     result[position++] = line.left;
     result[position++] = line.baseline;
     result[position++] = static_cast<double>(line.line_number);
+	result[position++] = line.text_width;
+    result[position++] = line.text_left;
+    result[position++] = line.text_top;
+    result[position++] = line.text_right;	
+    result[position++] = line.text_bottom;
   }
 
   return result;
@@ -219,7 +224,7 @@ Dart_Handle Paragraph::getLineMetricsAt(int lineNumber,
   if (!found) {
     return Dart_Null();
   }
-  std::array<Dart_Handle, 9> arguments = {
+  std::array<Dart_Handle, 14> arguments = {
       Dart_NewBoolean(line.fHardBreak),
       Dart_NewDouble(line.fAscent),
       Dart_NewDouble(line.fDescent),
@@ -232,6 +237,11 @@ Dart_Handle Paragraph::getLineMetricsAt(int lineNumber,
       Dart_NewDouble(line.fLeft),
       Dart_NewDouble(line.fBaseline),
       Dart_NewInteger(line.fLineNumber),
+      Dart_NewDouble(line.fTextWidth),
+      Dart_NewDouble(line.fTextLeft),
+      Dart_NewDouble(line.fTextTop),
+      Dart_NewDouble(line.fTextRight),
+      Dart_NewDouble(line.fTextBottom)
   };
 
   Dart_Handle handle =

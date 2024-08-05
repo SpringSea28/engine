@@ -2821,6 +2821,11 @@ class LineMetrics {
     required this.left,
     required this.baseline,
     required this.lineNumber,
+    this.textWidth = 0,
+    this.textLeft = 0,
+    this.textTop = 0,
+    this.textRight = 0,
+    this.textBottom = 0,
   });
 
   LineMetrics._(
@@ -2833,7 +2838,20 @@ class LineMetrics {
     this.left,
     this.baseline,
     this.lineNumber,
+      this.textWidth,
+      this.textLeft,
+      this.textTop,
+      this.textRight,
+      this.textBottom,
   );
+
+  // add by sojet start >>>
+  final double textWidth ;
+  final double textLeft ;
+  final double textTop ;
+  final double textRight ;
+  final double textBottom ;
+  // <<< add by sojet end
 
   /// True if this line ends with an explicit line break (e.g. '\n') or is the end
   /// of the paragraph. False otherwise.
@@ -2915,11 +2933,16 @@ class LineMetrics {
         && other.width == width
         && other.left == left
         && other.baseline == baseline
-        && other.lineNumber == lineNumber;
+        && other.lineNumber == lineNumber
+        && other.textWidth == textWidth
+        && other.textLeft == textLeft
+        && other.textTop == textTop
+        && other.textRight == textRight
+        && other.textBottom == textBottom;
   }
 
   @override
-  int get hashCode => Object.hash(hardBreak, ascent, descent, unscaledAscent, height, width, left, baseline, lineNumber);
+  int get hashCode => Object.hash(hardBreak, ascent, descent, unscaledAscent, height, width, left, baseline, lineNumber, textWidth, textLeft, textTop, textRight, textBottom);
 
   @override
   String toString() {
@@ -2931,7 +2954,12 @@ class LineMetrics {
                        'width: $width, '
                        'left: $left, '
                        'baseline: $baseline, '
-                       'lineNumber: $lineNumber)';
+                       'lineNumber: $lineNumber, '
+        'textWidth: $textWidth, '
+    'textLeft: $textLeft, '
+    'textTop: $textTop, '
+    'textRight: $textRight, '
+    'textBottom: $textBottom, )';
   }
 }
 
@@ -3269,7 +3297,7 @@ base class _NativeParagraph extends NativeFieldWrapperClass1 implements Paragrap
   @override
   List<LineMetrics> computeLineMetrics() {
     final Float64List encoded = _computeLineMetrics();
-    final int count = encoded.length ~/ 9;
+    final int count = encoded.length ~/ 14;
     int position = 0;
     final List<LineMetrics> metrics = <LineMetrics>[
       for (int index = 0; index < count; index += 1)
@@ -3283,6 +3311,11 @@ base class _NativeParagraph extends NativeFieldWrapperClass1 implements Paragrap
           left:           encoded[position++],
           baseline:       encoded[position++],
           lineNumber:     encoded[position++].toInt(),
+          textWidth:      encoded[position++],
+          textLeft:       encoded[position++],
+          textTop:        encoded[position++],
+          textRight:      encoded[position++],
+          textBottom:     encoded[position++],
         )
     ];
     return metrics;

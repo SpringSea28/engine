@@ -286,6 +286,14 @@ std::vector<LineMetrics>& ParagraphSkia::GetLineMetrics() {
       txtm.left = skm.fLeft;
       txtm.baseline = skm.fBaseline;
       txtm.line_number = skm.fLineNumber;
+	  
+	  // add by sojet start >>>
+	  txtm.text_width = skm.fTextWidth;
+	  txtm.text_left = skm.fTextLeft;
+	  txtm.text_top	 = skm.fTextTop;
+	  txtm.text_right  = skm.fTextRight;
+	  txtm.text_bottom = skm.fTextBottom;
+	  // <<< add by sojet end
 
       for (const auto& sk_iter : skm.fLineMetrics) {
         const skt::StyleMetrics& sk_style_metrics = sk_iter.second;
