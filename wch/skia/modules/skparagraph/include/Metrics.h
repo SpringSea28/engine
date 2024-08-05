@@ -86,6 +86,14 @@ public:
     // Zero indexed line number
     size_t fLineNumber = 0;
 
+	// add by sojet start >>>
+	double fTextWidth = 0;
+    double fTextLeft = 0;
+    double fTextTop    = 0;
+    double fTextRight  = 0;
+    double fTextBottom = 0;
+	// <<< add by sojet end
+
     // Mapping between text index ranges and the FontMetrics associated with
     // them. The first run will be keyed under start_index. The metrics here
     // are before layout and are the base values we calculate from.

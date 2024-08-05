@@ -28,6 +28,11 @@ class ParagraphImpl;
 class TextLine {
 public:
 
+	// add by sojet start >>>
+	SkScalar fRunAdvanceWidth;
+	SkRect fRunBounds;
+	// <<< add by sojet end
+
     struct ClipContext {
       const Run* run;
       size_t pos;

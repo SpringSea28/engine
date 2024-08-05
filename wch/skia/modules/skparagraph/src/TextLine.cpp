@@ -1155,6 +1155,14 @@ LineMetrics TextLine::getMetrics() const {
         return true;
     });
 
+	// add by sojet start >>>
+	result.fTextWidth = this->fRunAdvanceWidth;
+    result.fTextLeft = this->fRunBounds.fLeft;
+    result.fTextTop = this->fRunBounds.fTop;
+    result.fTextRight = this->fRunBounds.fRight;
+    result.fTextBottom = this->fRunBounds.fBottom;
+	// <<< add by sojet end
+
     return result;
 }
 

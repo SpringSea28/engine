@@ -591,7 +591,9 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
 //             this->text().data()); 
 	    
     if (!fHasLineBreaks &&
-        !fHasWhitespacesInside &&
+		// commented out by sojet start >>>
+        //!fHasWhitespacesInside &&
+		// <<< commented out by sojet end
         fPlaceholders.size() == 1 &&
         fRuns.size() == 1 && fRuns[0].fAdvance.fX <= maxWidth) {
         // This is a short version of a line breaking when we know that:
@@ -641,6 +643,13 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
                       clusterRange, clusterRangeWithGhosts, run.advance().x(),
                       metrics);
 
+		// add by sojet start >>>
+		SkFont font(run.font());
+        font.setEdging(SkFont::Edging::kAntiAlias);
+		textLine.fRunAdvanceWidth = font.measureText(this->text().data(), this->text().size(), SkTextEncoding::kUTF8, &textLine.fRunBounds);
+		//SkDebugf("%s:%d  text: %s advanceWidth=%f (%f, %f, %f, %f)>>>>>>>>>>\n", __func__, __LINE__, 
+		//	this->text().data(), textLine.fRunAdvanceWidth, textLine.fRunBounds.fLeft, textLine.fRunBounds.fTop, textLine.fRunBounds.width(), textLine.fRunBounds.height());
+		// <<< add by sojet end
 
         fLongestLine = nearlyZero(advance.fX) ? run.advance().fX : advance.fX;
         fHeight = advance.fY;
