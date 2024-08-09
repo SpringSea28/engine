@@ -31,7 +31,7 @@ source_set("ui") {
   }
 
   include_dirs = [
-  # Ìí¼Ó Skia Í·ÎÄ¼şÂ·¾¶
+  # æ·»åŠ  Skia å¤´æ–‡ä»¶è·¯å¾„
     "//flutter/third_party/skia/include/core",
     "//flutter/third_party/zint"
   ]

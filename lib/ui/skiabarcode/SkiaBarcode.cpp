@@ -21,6 +21,8 @@
 #include "third_party/skia/modules/skparagraph/include/Metrics.h"
 #include "flutter/display_list/dl_color.h"
 
+std::unique_ptr<txt::Paragraph> createParagraph(const char* text, const txt::TextStyle& text_style);
+
 using namespace sojet::barcode;
 
 /* `is_sane()` flags */
@@ -1217,9 +1219,22 @@ int SkiaBarcode::plot_vector() {
     hide_text = ((!symbol->show_hrt) || (strlen((const char*)symbol->text) == 0));
     if (!hide_text) {
         SkRect bounds;
-        m_Font.measureText(symbol->text, strlen((const char*)symbol->text), SkTextEncoding::kUTF8, &bounds, &m_Paint);
-        humanReadableTextWidth = bounds.width();
-        humanReadableTextHeight = bounds.height();
+        //modify wch start >>>
+//        m_Font.measureText(symbol->text, strlen((const char*)symbol->text), SkTextEncoding::kUTF8, &bounds, &m_Paint);
+
+        std::unique_ptr<txt::Paragraph> paragraph = createParagraph((const char*)symbol->text,m_text_style);
+
+        FML_LOG(ERROR) << "measureText: ";
+        paragraph->Layout(INFINITY);
+        FML_LOG(ERROR) << "Layout: ";
+        skia::textlayout::LineMetrics line;
+        const bool found = paragraph->GetLineMetricsAt(0, &line);
+
+//        humanReadableTextWidth = bounds.width();
+//        humanReadableTextHeight = bounds.height();
+        humanReadableTextWidth = line.fWidth;
+        humanReadableTextHeight = line.fTextBottom -line.fTextTop;
+        //modify wch end >>>
     }
     out_set_whitespace_offsets(symbol, hide_text, &xoffset, &yoffset, &roffset, &boffset, 0 /*scaler*/,
         NULL, NULL, NULL, NULL);
@@ -1267,6 +1282,7 @@ int SkiaBarcode::plot_vector() {
 
     float barWidth = symbol->width + dot_overspill + (xoffset + roffset);
     float barHeight = symbol->height + dot_overspill + (yoffset + boffset);
+
 
     /* Plot Maxicode symbols */
     if (symbol->symbology == BARCODE_MAXICODE) {
@@ -1742,11 +1758,11 @@ int SkiaBarcode::plot_vector() {
         }
     }
 
-    m_barcode_dl_paint.setColor(flutter::DlColor::kRed());
-    m_barcode_dl_paint.setDrawStyle(flutter::DlDrawStyle::kStroke);
-    if(m_display_list_builder){
-      m_display_list_builder->DrawRect(SkRect::MakeLTRB(0, 0, m_fBarcodeWidth, m_fBarcodeHeight), m_barcode_dl_paint);
-    }
+//    m_barcode_dl_paint.setColor(flutter::DlColor::kRed());
+//    m_barcode_dl_paint.setDrawStyle(flutter::DlDrawStyle::kStroke);
+//    if(m_display_list_builder){
+//      m_display_list_builder->DrawRect(SkRect::MakeLTRB(0, 0, m_fBarcodeWidth, m_fBarcodeHeight), m_barcode_dl_paint);
+//    }
     //vector_reduce_rectangles(symbol);
     //vector_scale(symbol);
     m_BarcodePicture = picRecoder.finishRecordingAsPicture();
@@ -1795,7 +1811,9 @@ void SkiaBarcode::drawRect(float x, float y, float width, float height, const Sk
     float bottom = top + height * m_XDimensions;
 
     if(m_display_list_builder){
+      FML_LOG(ERROR) << "drawRect: ";
       m_display_list_builder->DrawRect(SkRect::MakeLTRB(left, top, right, bottom), m_barcode_dl_paint);
+      FML_LOG(ERROR) << "drawRect end: ";
       return;
     }
 
@@ -1809,6 +1827,8 @@ std::unique_ptr<txt::Paragraph> createParagraph(const char* text, const txt::Tex
     std::string first_family = text_style.font_families.front();
     paragraphStyle.font_family = first_family;
   }
+  paragraphStyle.max_lines = 1;
+  //  paragraphStyle.max_lines = std::numeric_limits<double>::infinity();
   flutter::FontCollection& font_collection = flutter::UIDartState::Current()
                                         ->platform_configuration()
                                         ->client()
@@ -1856,15 +1876,15 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
 //    y += bounds.height();       //根据文本实际高度，获取文本底部的值
 
     if(m_display_list_builder){
-
+      FML_LOG(ERROR) << "drawString: ";
       std::unique_ptr<txt::Paragraph> paragraph = createParagraph(text,m_text_style);
       if(paragraph == nullptr){
         return;
       }
-//      FML_LOG(ERROR) << "drawString: ";
-//      FML_LOG(ERROR) << "m_fBarcodeWidth: " << m_fBarcodeWidth;
-      paragraph->Layout(m_fBarcodeWidth);
-//      FML_LOG(ERROR) << "Layout: ";
+      FML_LOG(ERROR) << "drawString: ";
+      FML_LOG(ERROR) << "m_fBarcodeWidth: " << m_fBarcodeWidth;
+      paragraph->Layout(INFINITY);
+      FML_LOG(ERROR) << "Layout: ";
       skia::textlayout::LineMetrics line;
       const bool found = paragraph->GetLineMetricsAt(0, &line);
       if (!found) {
@@ -1879,7 +1899,7 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
       y += -(baseline + textTop);
 //      y += (line.fTextBottom -line.fTextTop);       //根据文本实际高度，获取文本底部的值
       paragraph->Paint(m_display_list_builder,x,y);
-//      FML_LOG(ERROR) << "Paint: ";
+      FML_LOG(ERROR) << "Paint: ";
       return;
     }
 

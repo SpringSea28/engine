@@ -260,7 +260,7 @@ private:
     SkPaint m_Paint;
     sk_sp<SkPicture> m_BarcodePicture;
 
-    flutter::DisplayListBuilder* m_display_list_builder;
+    flutter::DisplayListBuilder* m_display_list_builder = nullptr;
     flutter::DlPaint m_barcode_dl_paint;
     txt::TextStyle m_text_style;
 };

@@ -5,19 +5,37 @@ part of dart.ui;
 
 enum BearerBarType {
   /* No bearer bar. */
-  BEARER_BAR_NONE,
+  none,
 
 /* Bearer Bar is drawn on the upper side of the bar code. */
-  BEARER_BAR_TOP,
+  top,
 
 /* Bearer Bar is drawn on the bottom side of the bar code. */
-  BEARER_BAR_BOTTOM,
+  bottom,
 
 /* Bearer Bar is drawn on top and bottom of the bar code. */
-  BEARER_BAR_BIND,
+  bind,
 
 /* Bearer Bar is drawn on all sides of the bar code. */
-  BEARER_BAR_RECT,
+  rect,
+}
+
+enum BarcodeType {
+  codabar,
+  code25,
+  code39,
+  code93,
+  code128,
+  dataMatrix,
+  ean,
+  gridMatrix,
+  maxiCode,
+  pdf417,
+  QRCode,
+  UPCA,
+  UPCE,
+  ITF14,
+  hanXin
 }
 
 Int32List _encodeBarcodeStyle(int? quietZoneWidth,
@@ -143,16 +161,35 @@ class BarcodeStyle {
   @override
   String toString() {
     return 'BarcodeStyle('
-        'quietZoneWidth: ${ _encoded[0] & 0x00002 == 0x00002 ? _encoded[1] : "unspecified"}, '
-        'quietZoneHeight: ${ _encoded[0] & 0x00004 == 0x00004 ? _encoded[2] : "unspecified"}, '
-        'humanReadableLocation: ${ _encoded[0] & 0x00008 == 0x00008 ? _encoded[3] : "unspecified"}, '
-        'textMargin: ${ _encoded[0] & 0x00010 == 0x00010 ? _encoded[4] : "unspecified"}, '
-        'bearerBarType: ${ _encoded[0] & 0x00020 == 0x00020 ? BearerBarType.values[_encoded[5]] : "unspecified"}, '
-        'thickness: ${ _encoded[0] & 0x00040 == 0x00040 ? _encoded[6] : "unspecified"}, '
-        'xDimension: ${ _encoded[0] & 0x00080 == 0x00080 ? _xDimension : "unspecified"}, '
-        'barHeight: ${ _encoded[0] & 0x00100 == 0x00100 ? _barHeight : "unspecified"}, '
-        'background: ${ _encoded[0] & 0x08000 == 0x08000 ? _background : "unspecified"}, '
-        'foreground: ${ _encoded[0] & 0x10000 == 0x10000 ? _foreground : "unspecified"}, '
+        'quietZoneWidth: ${ _encoded[0] & 0x00002 == 0x00002
+        ? _encoded[1]
+        : "unspecified"}, '
+        'quietZoneHeight: ${ _encoded[0] & 0x00004 == 0x00004
+        ? _encoded[2]
+        : "unspecified"}, '
+        'humanReadableLocation: ${ _encoded[0] & 0x00008 == 0x00008
+        ? _encoded[3]
+        : "unspecified"}, '
+        'textMargin: ${ _encoded[0] & 0x00010 == 0x00010
+        ? _encoded[4]
+        : "unspecified"}, '
+        'bearerBarType: ${ _encoded[0] & 0x00020 == 0x00020 ? BearerBarType
+        .values[_encoded[5]] : "unspecified"}, '
+        'thickness: ${ _encoded[0] & 0x00040 == 0x00040
+        ? _encoded[6]
+        : "unspecified"}, '
+        'xDimension: ${ _encoded[0] & 0x00080 == 0x00080
+        ? _xDimension
+        : "unspecified"}, '
+        'barHeight: ${ _encoded[0] & 0x00100 == 0x00100
+        ? _barHeight
+        : "unspecified"}, '
+        'background: ${ _encoded[0] & 0x08000 == 0x08000
+        ? _background
+        : "unspecified"}, '
+        'foreground: ${ _encoded[0] & 0x10000 == 0x10000
+        ? _foreground
+        : "unspecified"}, '
         ')';
   }
 }
@@ -160,26 +197,29 @@ class BarcodeStyle {
 // add by sojet start >>>
 base class Barcode extends NativeFieldWrapperClass1 {
 
-  Barcode(BarcodeStyle barcodeStyle) {
+  Barcode(BarcodeType type,BarcodeStyle barcodeStyle,) {
     final Int32List encoded = barcodeStyle._encoded;
-    create(encoded,
+    create(
+      encoded,
       barcodeStyle._xDimension ?? 0,
       barcodeStyle._barHeight ?? 0,
       barcodeStyle._background?._objects,
       barcodeStyle._background?._data,
       barcodeStyle._foreground?._objects,
-      barcodeStyle._foreground?._data,);
+      barcodeStyle._foreground?._data,
+      type.index,);
   }
 
 
   @Native<Void Function(Handle, Handle, Double, Double,
-      Handle, Handle, Handle, Handle)>(
+      Handle, Handle, Handle, Handle,Uint32)>(
       symbol: 'sojet::barcode::Barcode::Create')
   external void create(Int32List encoded, double xDimension, double barHeight,
       List<Object?>? backgroundObjects,
       ByteData? backgroundData,
       List<Object?>? foregroundObjects,
-      ByteData? foregroundData,);
+      ByteData? foregroundData,
+      int type,);
 
   @Native<Int32 Function(Pointer<Void>, Handle, Int32)>(
       symbol: 'sojet::barcode::Barcode::encode')
@@ -197,6 +237,14 @@ base class Barcode extends NativeFieldWrapperClass1 {
   @Native<Void Function(Pointer<Void>, Pointer<Void>, Double, Double)>(
       symbol: 'sojet::barcode::Barcode::setCanvas')
   external void _setCanvas(_NativeCanvas canvas, double x, double y);
+
+  @Native<Double Function(Pointer<Void>)>(
+      symbol: 'sojet::barcode::Barcode::getWidth', isLeaf: true)
+  external double getWidth();
+
+  @Native<Double Function(Pointer<Void>)>(
+      symbol: 'sojet::barcode::Barcode::getHeight', isLeaf: true)
+  external double getHeight();
 
   // void setBarcodePaint(Paint paint) {
   //   _setBarcodePaint(paint._objects, paint._data);

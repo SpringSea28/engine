@@ -13,6 +13,9 @@
 namespace sojet {
 namespace barcode {
 
+enum BarcodeType { kCodabar, kCode25, kCode39, kCode93, kCode128, kDataMatrix,
+                   kEan,kGridMatrix,kMaxiCode,kPdf417,kQRCode,kUPCA,kUPCE,kITF14,kHanXin };
+
 class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
   DEFINE_WRAPPERTYPEINFO();
   FML_FRIEND_MAKE_REF_COUNTED(Barcode);
@@ -25,7 +28,8 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
                      Dart_Handle background_objects,
                      Dart_Handle background_data,
                      Dart_Handle foreground_objects,
-                     Dart_Handle foreground_data);
+                     Dart_Handle foreground_data,
+                     int barcode_type);
 
   /**
     * 构造函数
@@ -38,7 +42,8 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
           Dart_Handle background_objects,
           Dart_Handle background_data,
           Dart_Handle foreground_objects,
-          Dart_Handle foreground_data);
+          Dart_Handle foreground_data,
+          int barcode_type);
   virtual ~Barcode();
 
   /**
@@ -117,13 +122,13 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
     * 获取条码的宽度(包括空白区域和边框大小)
     * @return  条码的宽度
    */
-  float getWidth();
+  double getWidth();
 
   /**
     * 获取条码的高度(包括空白区域和边框大小，不包括文本高度和文本与条码的边距)
     * @return  条码的高度
    */
-  float getHeight();
+  double getHeight();
 
   /**
     * 获取是否显示文本内容

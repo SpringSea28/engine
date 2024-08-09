@@ -313,10 +313,12 @@ typedef CanvasPath Path;
   V(SemanticsUpdateBuilder, updateNode)             \
   V(SemanticsUpdate, dispose)                       \
   V(Vertices, dispose)                              \
-  V(sojet::barcode::Barcode,encode)                                 \
-  V(sojet::barcode::Barcode,getErrorInfo)                           \
-  V(sojet::barcode::Barcode,setCanvas)                              \
-  V(sojet::barcode::Barcode,setTextStyle)                           \
+  V(sojet::barcode::Barcode,encode)                 \
+  V(sojet::barcode::Barcode,getErrorInfo)           \
+  V(sojet::barcode::Barcode,setCanvas)              \
+  V(sojet::barcode::Barcode,setTextStyle)           \
+  V(sojet::barcode::Barcode,getWidth)               \
+  V(sojet::barcode::Barcode,getHeight)              \
   V(sojet::barcode::Barcode,dispose)
 
 #ifdef IMPELLER_ENABLE_3D

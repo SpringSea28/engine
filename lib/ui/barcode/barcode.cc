@@ -5,6 +5,13 @@
 #include "flutter/fml/logging.h"
 #include "third_party/tonic/typed_data/dart_byte_data.h"
 
+#include "flutter/lib/ui/skiabarcode/Codabar.h"
+#include "flutter/lib/ui/skiabarcode/Code25.h"
+#include "flutter/lib/ui/skiabarcode/Code39.h"
+#include "flutter/lib/ui/skiabarcode/Code93.h"
+#include "flutter/lib/ui/skiabarcode/Code128.h"
+#include "flutter/lib/ui/skiabarcode/QRCode.h"
+
 #include <codecvt>
 #include <string>
 
@@ -108,11 +115,13 @@ void Barcode::Create(Dart_Handle wrapper,
                      Dart_Handle background_objects,
                      Dart_Handle background_data,
                      Dart_Handle foreground_objects,
-                     Dart_Handle foreground_data) {
+                     Dart_Handle foreground_data,
+                     int barcode_type) {
   flutter::UIDartState::ThrowIfUIOperationsProhibited();
   auto res = fml::MakeRefCounted<Barcode>(encoded, x_dimension, bar_height,
                                           background_objects, background_data,
-                                          foreground_objects, foreground_data);
+                                          foreground_objects, foreground_data,
+                                          barcode_type);
   res->AssociateWithDartWrapper(wrapper);
 }
 
@@ -122,9 +131,41 @@ Barcode::Barcode(const tonic::Int32List& encoded,
                  Dart_Handle background_objects,
                  Dart_Handle background_data,
                  Dart_Handle foreground_objects,
-                 Dart_Handle foreground_data) {
-  m_skia_barcode =
-      std::make_unique<sojet::barcode::SkiaBarcode>(bar_height, x_dimension);
+                 Dart_Handle foreground_data,
+                 int barcode_type) {
+  FML_LOG(ERROR) << "Barcode::Barcode barcode_type: "
+                << barcode_type;
+  if(x_dimension != 0){
+    bar_height = bar_height/x_dimension;
+  }
+  switch (barcode_type) {
+    case BarcodeType::kCodabar:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Codabar>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kCode25:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Code25>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kCode39:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Code39>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kCode93:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Code93>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kCode128:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Code128>(bar_height, x_dimension);
+      break;
+
+    default:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::SkiaBarcode>(bar_height, x_dimension);
+  }
+
+
   setBarcodeStyle(encoded, x_dimension, bar_height, background_objects,
                   background_data, foreground_objects, foreground_data);
 }
@@ -175,11 +216,11 @@ void Barcode::setQuietZoneHeight(int iQuietZoneHeight) {
   m_skia_barcode->setQuietZoneHeight(iQuietZoneHeight);
 }
 
-float Barcode::getWidth() {
+double Barcode::getWidth() {
   return m_skia_barcode->getWidth();
 }
 
-float Barcode::getHeight() {
+double Barcode::getHeight() {
   return m_skia_barcode->getHeight();
 }
 
