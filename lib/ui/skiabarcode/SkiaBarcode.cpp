@@ -1224,9 +1224,9 @@ int SkiaBarcode::plot_vector() {
 
         std::unique_ptr<txt::Paragraph> paragraph = createParagraph((const char*)symbol->text,m_text_style);
 
-        FML_LOG(ERROR) << "measureText: ";
+//        FML_LOG(ERROR) << "measureText: ";
         paragraph->Layout(INFINITY);
-        FML_LOG(ERROR) << "Layout: ";
+//        FML_LOG(ERROR) << "Layout: ";
         skia::textlayout::LineMetrics line;
         const bool found = paragraph->GetLineMetricsAt(0, &line);
 
@@ -1811,9 +1811,9 @@ void SkiaBarcode::drawRect(float x, float y, float width, float height, const Sk
     float bottom = top + height * m_XDimensions;
 
     if(m_display_list_builder){
-      FML_LOG(ERROR) << "drawRect: ";
+//      FML_LOG(ERROR) << "drawRect: ";
       m_display_list_builder->DrawRect(SkRect::MakeLTRB(left, top, right, bottom), m_barcode_dl_paint);
-      FML_LOG(ERROR) << "drawRect end: ";
+//      FML_LOG(ERROR) << "drawRect end: ";
       return;
     }
 
@@ -1876,15 +1876,15 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
 //    y += bounds.height();       //根据文本实际高度，获取文本底部的值
 
     if(m_display_list_builder){
-      FML_LOG(ERROR) << "drawString: ";
+//      FML_LOG(ERROR) << "drawString: ";
       std::unique_ptr<txt::Paragraph> paragraph = createParagraph(text,m_text_style);
       if(paragraph == nullptr){
         return;
       }
-      FML_LOG(ERROR) << "drawString: ";
-      FML_LOG(ERROR) << "m_fBarcodeWidth: " << m_fBarcodeWidth;
+//      FML_LOG(ERROR) << "drawString: ";
+//      FML_LOG(ERROR) << "m_fBarcodeWidth: " << m_fBarcodeWidth;
       paragraph->Layout(INFINITY);
-      FML_LOG(ERROR) << "Layout: ";
+//      FML_LOG(ERROR) << "Layout: ";
       skia::textlayout::LineMetrics line;
       const bool found = paragraph->GetLineMetricsAt(0, &line);
       if (!found) {
@@ -1899,7 +1899,7 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
       y += -(baseline + textTop);
 //      y += (line.fTextBottom -line.fTextTop);       //根据文本实际高度，获取文本底部的值
       paragraph->Paint(m_display_list_builder,x,y);
-      FML_LOG(ERROR) << "Paint: ";
+//      FML_LOG(ERROR) << "Paint: ";
       return;
     }
 

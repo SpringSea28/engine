@@ -122,6 +122,13 @@ class BarcodeStyle {
           background,
           foreground,
         ),
+        _quietZoneWidth = quietZoneWidth,
+        _quietZoneHeight = quietZoneHeight,
+        _humanReadableLocation = humanReadableLocation,
+        _textMargin = textMargin,
+        _bearerBarType = bearerBarType,
+        _thickness = thickness,
+
         _xDimension = xDimension,
         _barHeight = barHeight,
         _background = background,
@@ -133,6 +140,13 @@ class BarcodeStyle {
   final double? _barHeight;
   final Paint? _background;
   final Paint? _foreground;
+
+  final int? _quietZoneWidth;
+  final int? _quietZoneHeight;
+  final int? _humanReadableLocation;
+  final int? _textMargin;
+  final BearerBarType? _bearerBarType;
+  final int? _thickness;
 
   @override
   bool operator ==(Object other) {
@@ -192,12 +206,41 @@ class BarcodeStyle {
         : "unspecified"}, '
         ')';
   }
+
+  BarcodeStyle copyWith({
+    int? quietZoneWidth,
+    int? quietZoneHeight,
+    int? humanReadableLocation,
+    int? textMargin,
+    BearerBarType? bearerBarType,
+    int? thickness,
+    double? xDimension,
+    double? barHeight,
+    Paint? background,
+    Paint? foreground,
+  }) {
+    return BarcodeStyle(
+      quietZoneWidth: quietZoneWidth ?? this._quietZoneWidth,
+      quietZoneHeight: quietZoneHeight ?? this._quietZoneHeight,
+      humanReadableLocation: humanReadableLocation ?? this._humanReadableLocation,
+      textMargin: textMargin ?? this._textMargin,
+      bearerBarType: bearerBarType ?? this._bearerBarType,
+
+      thickness: thickness ?? this._thickness,
+      xDimension: xDimension ?? this._xDimension,
+      barHeight: barHeight ?? this._barHeight,
+      foreground: foreground ?? this._foreground,
+      background: background ?? this._background,
+
+    );
+  }
+
 }
 
 // add by sojet start >>>
 base class Barcode extends NativeFieldWrapperClass1 {
 
-  Barcode(BarcodeType type,BarcodeStyle barcodeStyle,) {
+  Barcode(BarcodeType type, BarcodeStyle barcodeStyle,) {
     final Int32List encoded = barcodeStyle._encoded;
     create(
       encoded,
@@ -212,7 +255,7 @@ base class Barcode extends NativeFieldWrapperClass1 {
 
 
   @Native<Void Function(Handle, Handle, Double, Double,
-      Handle, Handle, Handle, Handle,Uint32)>(
+      Handle, Handle, Handle, Handle, Uint32)>(
       symbol: 'sojet::barcode::Barcode::Create')
   external void create(Int32List encoded, double xDimension, double barHeight,
       List<Object?>? backgroundObjects,
