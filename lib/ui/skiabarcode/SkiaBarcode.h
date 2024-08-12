@@ -164,7 +164,7 @@ public:
     * 设置保护框类型
     *@param   保护框类型
     */
-    void setBearerBarType(int type);
+    virtual void setBearerBarType(int type);
 
     /**
     * 获取条码边框的厚度
@@ -176,7 +176,7 @@ public:
     * 设置条码边框的厚度
     *@param     条码边框的厚度
     */
-    void setBearerBarThickness(int thickness);
+    virtual void setBearerBarThickness(int thickness);
 
     /**
     * 设置文本的高度

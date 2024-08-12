@@ -1805,6 +1805,15 @@ void SkiaBarcode::drawPath(float x, float y, float diameter, const SkPaint& pain
 }
 
 void SkiaBarcode::drawRect(float x, float y, float width, float height, const SkPaint& paint, SkCanvas* canvas) {
+//  FML_LOG(ERROR) << "SkiaBarcode BearerBarType: "
+//                 << symbol->output_options;
+//  FML_LOG(ERROR) << "SkiaBarcode BearerBarThickness: "
+//                 << symbol->border_width;
+//  FML_LOG(ERROR) << "SkiaBarcode quiet_zone_width: "
+//                 << symbol->whitespace_width;
+//  FML_LOG(ERROR) << "SkiaBarcode quiet_zone_height: "
+//                 << symbol->whitespace_height;
+
     float left = x * m_XDimensions;
     float top = y * m_XDimensions;
     float right = left + width * m_XDimensions;

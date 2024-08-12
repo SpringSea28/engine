@@ -33,13 +33,13 @@ class BarcodeStyle {
 
   std::optional<flutter::DlPaint> background;
   std::optional<flutter::DlPaint> foreground;
-  float x_dimension = 1.0;
-  float bar_height = 80.0;
+  float x_dimension = 9.0;
+  float bar_height = 227.0/9;
   int quiet_zone_width = 0;
   int quiet_zone_height = 0;
   int human_readable_location = 0;
-  int text_margin = 0;
-  BearerBarType bearer_bar_type = BearerBarType::BEARER_BAR_RECT;
+  int text_margin = 3;
+  BearerBarType bearer_bar_type = BearerBarType::BEARER_BAR_NONE;
   int thickness = 0;
 
   BarcodeStyle();

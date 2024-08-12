@@ -195,6 +195,12 @@ source_set("ui") {
     "skiabarcode/SkiaBarcode.h",
     "skiabarcode/UPC.cpp",
     "skiabarcode/UPC.h",
+
+    "skiabarcode/ITF14.cpp",
+    "skiabarcode/ITF14.h",
+    "skiabarcode/HanXin.cpp",
+    "skiabarcode/HanXin.h",
+
     "barcode/barcode.cc",
     "barcode/barcode.h",
     "barcode/barcode_paragraph_builder.cc",

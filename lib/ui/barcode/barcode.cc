@@ -10,7 +10,15 @@
 #include "flutter/lib/ui/skiabarcode/Code39.h"
 #include "flutter/lib/ui/skiabarcode/Code93.h"
 #include "flutter/lib/ui/skiabarcode/Code128.h"
+#include "flutter/lib/ui/skiabarcode/DataMatrix.h"
+#include "flutter/lib/ui/skiabarcode/Ean.h"
+#include "flutter/lib/ui/skiabarcode/GridMatrix.h"
+#include "flutter/lib/ui/skiabarcode/MaxiCode.h"
+#include "flutter/lib/ui/skiabarcode/Pdf417.h"
 #include "flutter/lib/ui/skiabarcode/QRCode.h"
+#include "flutter/lib/ui/skiabarcode/UPC.h"
+#include "flutter/lib/ui/skiabarcode/ITF14.h"
+#include "flutter/lib/ui/skiabarcode/HanXin.h"
 
 #include <codecvt>
 #include <string>
@@ -138,6 +146,8 @@ Barcode::Barcode(const tonic::Int32List& encoded,
   if(x_dimension != 0){
     bar_height = bar_height/x_dimension;
   }
+
+  auto upc_barcode = static_cast<sojet::barcode::UPC*>(nullptr);
   switch (barcode_type) {
     case BarcodeType::kCodabar:
       m_skia_barcode =
@@ -159,6 +169,51 @@ Barcode::Barcode(const tonic::Int32List& encoded,
       m_skia_barcode =
           std::make_unique<sojet::barcode::Code128>(bar_height, x_dimension);
       break;
+    case BarcodeType::kDataMatrix:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::DataMatrix>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kEan:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Ean>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kGridMatrix:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::GridMatrix>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kMaxiCode:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::MaxiCode>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kPdf417:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::Pdf417>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kQRCode:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::QRCode>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kUPCA:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::UPC>(bar_height, x_dimension);
+      upc_barcode = static_cast<sojet::barcode::UPC*>(m_skia_barcode.get());
+      upc_barcode->setMode(sojet::barcode::UPC::Mode::UPCA);
+      break;
+    case BarcodeType::kUPCE:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::UPC>(bar_height, x_dimension);
+      upc_barcode = static_cast<sojet::barcode::UPC*>(m_skia_barcode.get());
+      upc_barcode->setMode(sojet::barcode::UPC::Mode::UPCE);
+      break;
+    case BarcodeType::kITF14:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::ITF14>(bar_height, x_dimension);
+      break;
+    case BarcodeType::kHanXin:
+      m_skia_barcode =
+          std::make_unique<sojet::barcode::HanXin>(bar_height, x_dimension);
+      break;
+
 
     default:
       m_skia_barcode =
@@ -564,8 +619,22 @@ void Barcode::setBarcodeStyle(const tonic::Int32List& encoded,
     }
   }
 
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bar_height: "
+                 << style.bar_height;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle x_dimension: "
+                 << style.x_dimension;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_width: "
+                 << style.quiet_zone_width;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_height: "
+                 << style.quiet_zone_height;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle human_readable_location: "
+                 << style.human_readable_location;
   FML_LOG(ERROR) << "Barcode::setBarcodeStyle text_margin: "
                  << style.text_margin;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bearer_bar_type: "
+                 << style.bearer_bar_type;
+  FML_LOG(ERROR) << "Barcode::setBarcodeStyle thickness: "
+                 << style.thickness;
   m_barcode_style = style;
   setXDimensions(m_barcode_style.x_dimension);
   setBarHeight(m_barcode_style.bar_height);
