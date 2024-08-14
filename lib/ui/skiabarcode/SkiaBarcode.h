@@ -242,6 +242,8 @@ private:
     void drawRect(float x, float y, float width, float height, const SkPaint& paint, SkCanvas* canvas);
     void drawString(const char* text, float x, float y, float width, float scale, SkFont font, const SkPaint& paint, SkCanvas* canvas);
 
+    void drawCircleStroke(float x, float y, float radius,float strokeWidth);
+
 protected:
     virtual bool gs1Supported();
 

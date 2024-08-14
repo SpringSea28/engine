@@ -20,7 +20,13 @@ enum BearerBarType {
   rect,
 }
 
-enum BarcodeType {
+enum BarcodeDataType {
+  binary,
+  unicode,
+  gs1
+}
+
+enum BarcodeFormat {
   codabar,
   code25,
   code39,
@@ -148,6 +154,15 @@ class BarcodeStyle {
   final BearerBarType? _bearerBarType;
   final int? _thickness;
 
+  double? get xDimension => _xDimension;
+  double? get barHeight => _barHeight;
+  int? get quietZoneWidth => _quietZoneWidth;
+  int? get quietZoneHeight => _quietZoneHeight;
+  int? get textMargin => _textMargin;
+  int? get humanReadableLocation => _humanReadableLocation;
+  BearerBarType? get bearerBarType => _bearerBarType;
+  int? get thickness => _thickness;
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -240,7 +255,7 @@ class BarcodeStyle {
 // add by sojet start >>>
 base class Barcode extends NativeFieldWrapperClass1 {
 
-  Barcode(BarcodeType type, BarcodeStyle barcodeStyle,) {
+  Barcode(BarcodeFormat format, BarcodeStyle barcodeStyle,) {
     final Int32List encoded = barcodeStyle._encoded;
     create(
       encoded,
@@ -250,7 +265,7 @@ base class Barcode extends NativeFieldWrapperClass1 {
       barcodeStyle._background?._data,
       barcodeStyle._foreground?._objects,
       barcodeStyle._foreground?._data,
-      type.index,);
+      format.index,);
   }
 
 
@@ -262,7 +277,7 @@ base class Barcode extends NativeFieldWrapperClass1 {
       ByteData? backgroundData,
       List<Object?>? foregroundObjects,
       ByteData? foregroundData,
-      int type,);
+      int format,);
 
   @Native<Int32 Function(Pointer<Void>, Handle, Int32)>(
       symbol: 'sojet::barcode::Barcode::encode')
@@ -288,6 +303,15 @@ base class Barcode extends NativeFieldWrapperClass1 {
   @Native<Double Function(Pointer<Void>)>(
       symbol: 'sojet::barcode::Barcode::getHeight', isLeaf: true)
   external double getHeight();
+
+
+  @Native<Void Function(Pointer<Void>, Int32, Bool, Bool)>(
+      symbol: 'sojet::barcode::Barcode::setDataType', isLeaf: true)
+  external void _setDataType(int dataType,bool gs1NoCheck, bool parseEscapes);
+
+  void setDataType(BarcodeDataType dataType,{bool gs1NoCheck = false, bool parseEscapes = false}) {
+    _setDataType(dataType.index,gs1NoCheck,parseEscapes);
+  }
 
   // void setBarcodePaint(Paint paint) {
   //   _setBarcodePaint(paint._objects, paint._data);

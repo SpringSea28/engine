@@ -1233,6 +1233,8 @@ int SkiaBarcode::plot_vector() {
 //        humanReadableTextWidth = bounds.width();
 //        humanReadableTextHeight = bounds.height();
         humanReadableTextWidth = line.fWidth;
+//        FML_LOG(ERROR) << "text: " << (const char*)symbol->text;
+//        FML_LOG(ERROR) << "humanReadableTextWidth: " <<humanReadableTextWidth;
         humanReadableTextHeight = line.fTextBottom -line.fTextTop;
         //modify wch end >>>
     }
@@ -1314,9 +1316,12 @@ int SkiaBarcode::plot_vector() {
         SkPaint p = m_Paint;
         p.setStyle(SkPaint::Style::kStroke_Style);
         p.setStrokeWidth(bull_width * m_XDimensions);
-        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 5 - bull_width) / 2.0, p, canvas);
-        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 3 - bull_width) / 2.0, p, canvas);
-        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr - bull_width) / 2.0, p, canvas);
+//        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 5 - bull_width) / 2.0, p, canvas);
+//        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 3 - bull_width) / 2.0, p, canvas);
+//        drawCircle(bull_x, bull_y, (hex_ydiameter + bull_d_incr - bull_width) / 2.0, p, canvas);
+        drawCircleStroke(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 5 - bull_width) / 2.0, bull_width * m_XDimensions);
+        drawCircleStroke(bull_x, bull_y, (hex_ydiameter + bull_d_incr * 3 - bull_width) / 2.0, bull_width * m_XDimensions);
+        drawCircleStroke(bull_x, bull_y, (hex_ydiameter + bull_d_incr - bull_width) / 2.0, bull_width * m_XDimensions);
 
         /* Hexagons */
         for (r = 0; r < symbol->rows; r++) {
@@ -1568,6 +1573,8 @@ int SkiaBarcode::plot_vector() {
         }
     }
 #endif
+
+    float textpartWidth = barWidth * m_XDimensions;
     /* Add the text */
     if (!hide_text) {
         float text_xposn;
@@ -1584,6 +1591,62 @@ int SkiaBarcode::plot_vector() {
         if (upceanflag >= 6) { /* UPC-E, EAN-8, UPC-A, EAN-13 */
             float textwidth;
             out_upcean_split_text(upceanflag, symbol->text, textpart1, textpart2, textpart3, textpart4);
+
+//            SkRect boundsPart1;
+//            m_Font.measureText(textpart1, strlen((const char*)textpart1), SkTextEncoding::kUTF8, &boundsPart1, &m_Paint);
+//            SkRect boundsPart2;
+//            m_Font.measureText(textpart2, strlen((const char*)textpart2), SkTextEncoding::kUTF8, &boundsPart2, &m_Paint);
+//            SkRect boundsPart3;
+//            m_Font.measureText(textpart3, strlen((const char*)textpart3), SkTextEncoding::kUTF8, &boundsPart3, &m_Paint);
+//            SkRect boundsPart4;
+//            m_Font.measureText(textpart4, strlen((const char*)textpart4), SkTextEncoding::kUTF8, &boundsPart4, &m_Paint);
+//            textpartWidth = std::max(textpartWidth, boundsPart1.width());
+//            textpartWidth = std::max(textpartWidth, boundsPart2.width());
+//            textpartWidth = std::max(textpartWidth, boundsPart3.width());
+//            textpartWidth = std::max(textpartWidth, boundsPart4.width());
+//
+            float part1Width = 0;
+            float part2Width = 0;
+            float part3Width = 0;
+            float part4Width = 0;
+
+            std::unique_ptr<txt::Paragraph> paragraph1 = createParagraph((const char*)textpart1,m_text_style);
+            if(paragraph1 != nullptr){
+              paragraph1->Layout(INFINITY);
+              skia::textlayout::LineMetrics line1;
+              paragraph1->GetLineMetricsAt(0, &line1);
+              part1Width = line1.fWidth;
+            }
+
+            std::unique_ptr<txt::Paragraph> paragraph2 = createParagraph((const char*)textpart2,m_text_style);
+            if(paragraph2 != nullptr){
+              paragraph2->Layout(INFINITY);
+              skia::textlayout::LineMetrics line2;
+              paragraph2->GetLineMetricsAt(0, &line2);
+              part2Width = line2.fWidth;
+            }
+
+            std::unique_ptr<txt::Paragraph> paragraph3 = createParagraph((const char*)textpart3,m_text_style);
+            if(paragraph3 != nullptr){
+              paragraph3->Layout(INFINITY);
+              skia::textlayout::LineMetrics line3;
+              paragraph3->GetLineMetricsAt(0, &line3);
+              part3Width = line3.fWidth;
+            }
+
+            std::unique_ptr<txt::Paragraph> paragraph4 = createParagraph((const char*)textpart4,m_text_style);
+            if(paragraph4 != nullptr){
+              paragraph4->Layout(INFINITY);
+              skia::textlayout::LineMetrics line4;
+              paragraph4->GetLineMetricsAt(0, &line4);
+              part4Width = line4.fWidth;
+            }
+
+            textpartWidth = std::max(textpartWidth, part1Width);
+            textpartWidth = std::max(textpartWidth, part2Width);
+            textpartWidth = std::max(textpartWidth, part3Width);
+            textpartWidth = std::max(textpartWidth, part4Width);
+
             if (upceanflag == 6) { /* UPC-E */
                 text_xposn = -5.0f + xoffset;
                 textwidth = 6.2f;
@@ -1758,25 +1821,36 @@ int SkiaBarcode::plot_vector() {
         }
     }
 
-//    m_barcode_dl_paint.setColor(flutter::DlColor::kRed());
-//    m_barcode_dl_paint.setDrawStyle(flutter::DlDrawStyle::kStroke);
-//    if(m_display_list_builder){
-//      m_display_list_builder->DrawRect(SkRect::MakeLTRB(0, 0, m_fBarcodeWidth, m_fBarcodeHeight), m_barcode_dl_paint);
-//    }
-    //vector_reduce_rectangles(symbol);
-    //vector_scale(symbol);
-    m_BarcodePicture = picRecoder.finishRecordingAsPicture();
-
+    if (!hide_text && upceanflag >= 6) {
+        m_fBarcodeWidth = textpartWidth;
+        SkRect tempRect = SkRect::MakeWH(textpartWidth, m_fBarcodeHeight);
+        m_BarcodePicture = picRecoder.finishRecordingAsPictureWithCull(tempRect);
+    } else {
+        //vector_reduce_rectangles(symbol);
+        //vector_scale(symbol);
+        m_BarcodePicture = picRecoder.finishRecordingAsPicture();
+    }
     return error_number;
 }
 
 void SkiaBarcode::drawCircle(float x, float y, float radius, const SkPaint& paint, SkCanvas* canvas) {
     if(m_display_list_builder){
-      m_display_list_builder->DrawCircle(SkPoint::Make(flutter::SafeNarrow(x), flutter::SafeNarrow(y)),
-                                       flutter::SafeNarrow(radius), m_barcode_dl_paint);
+      m_display_list_builder->DrawCircle(SkPoint::Make(flutter::SafeNarrow(x* m_XDimensions), flutter::SafeNarrow(y * m_XDimensions)),
+                                       flutter::SafeNarrow(radius* m_XDimensions), m_barcode_dl_paint);
       return;
     }
     canvas->drawCircle(x * m_XDimensions, y * m_XDimensions, radius * m_XDimensions, paint);
+}
+
+void SkiaBarcode::drawCircleStroke(float x, float y, float radius, float strokeWidth){
+  if(m_display_list_builder){
+    flutter::DlPaint copied_paint = m_barcode_dl_paint;
+    copied_paint.setDrawStyle(flutter::DlDrawStyle::kStroke);
+    copied_paint.setStrokeWidth(strokeWidth);
+    m_display_list_builder->DrawCircle(SkPoint::Make(flutter::SafeNarrow(x* m_XDimensions), flutter::SafeNarrow(y * m_XDimensions)),
+                                       flutter::SafeNarrow(radius* m_XDimensions), copied_paint);
+    return;
+  }
 }
 
 void SkiaBarcode::drawPath(float x, float y, float diameter, const SkPaint& paint, SkCanvas* canvas) {
@@ -1885,8 +1959,10 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
 //    y += bounds.height();       //根据文本实际高度，获取文本底部的值
 
     if(m_display_list_builder){
-//      FML_LOG(ERROR) << "drawString: ";
-      std::unique_ptr<txt::Paragraph> paragraph = createParagraph(text,m_text_style);
+//      FML_LOG(ERROR) << "drawString: " << text;
+      txt::TextStyle copyTextStyle = m_text_style;
+      copyTextStyle.font_size = m_text_style.font_size * scale;
+      std::unique_ptr<txt::Paragraph> paragraph = createParagraph(text,copyTextStyle);
       if(paragraph == nullptr){
         return;
       }
