@@ -15,9 +15,11 @@ void ITF14::setBearerBarType(int type) {
   switch (type) {
     case BEARER_BAR_RECT:
       symbol->output_options |= BARCODE_BOX;
+      m_bearer_bar_type = BEARER_BAR_RECT;
       break;
     case BEARER_BAR_BIND:
       symbol->output_options |= BARCODE_BIND;
+      m_bearer_bar_type = BEARER_BAR_BIND;
       break;
     case BEARER_BAR_NONE:
       symbol->output_options |= BARCODE_BOX;

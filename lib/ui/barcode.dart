@@ -44,9 +44,14 @@ enum BarcodeFormat {
   hanXin
 }
 
+enum HumanReadableLocation {
+  none,
+  bottom
+}
+
 Int32List _encodeBarcodeStyle(int? quietZoneWidth,
     int? quietZoneHeight,
-    int? humanReadableLocation,
+    HumanReadableLocation? humanReadableLocation,
     int? textMargin,
     BearerBarType? bearerBarType,
     int? thickness,
@@ -67,7 +72,7 @@ Int32List _encodeBarcodeStyle(int? quietZoneWidth,
   }
   if (humanReadableLocation != null) {
     result[0] |= 1 << 3;
-    result[3] = humanReadableLocation;
+    result[3] = humanReadableLocation.index;
   }
   if (textMargin != null) {
     result[0] |= 1 << 4;
@@ -106,7 +111,7 @@ class BarcodeStyle {
   BarcodeStyle({
     int? quietZoneWidth,
     int? quietZoneHeight,
-    int? humanReadableLocation,
+    HumanReadableLocation? humanReadableLocation,
     int? textMargin,
     BearerBarType? bearerBarType,
     int? thickness,
@@ -149,7 +154,7 @@ class BarcodeStyle {
 
   final int? _quietZoneWidth;
   final int? _quietZoneHeight;
-  final int? _humanReadableLocation;
+  final HumanReadableLocation? _humanReadableLocation;
   final int? _textMargin;
   final BearerBarType? _bearerBarType;
   final int? _thickness;
@@ -159,7 +164,7 @@ class BarcodeStyle {
   int? get quietZoneWidth => _quietZoneWidth;
   int? get quietZoneHeight => _quietZoneHeight;
   int? get textMargin => _textMargin;
-  int? get humanReadableLocation => _humanReadableLocation;
+  HumanReadableLocation? get humanReadableLocation => _humanReadableLocation;
   BearerBarType? get bearerBarType => _bearerBarType;
   int? get thickness => _thickness;
 
@@ -197,7 +202,7 @@ class BarcodeStyle {
         ? _encoded[2]
         : "unspecified"}, '
         'humanReadableLocation: ${ _encoded[0] & 0x00008 == 0x00008
-        ? _encoded[3]
+        ? HumanReadableLocation.values[_encoded[3]]
         : "unspecified"}, '
         'textMargin: ${ _encoded[0] & 0x00010 == 0x00010
         ? _encoded[4]
@@ -225,7 +230,7 @@ class BarcodeStyle {
   BarcodeStyle copyWith({
     int? quietZoneWidth,
     int? quietZoneHeight,
-    int? humanReadableLocation,
+    HumanReadableLocation? humanReadableLocation,
     int? textMargin,
     BearerBarType? bearerBarType,
     int? thickness,
