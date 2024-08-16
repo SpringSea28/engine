@@ -311,11 +311,27 @@ base class Barcode extends NativeFieldWrapperClass1 {
 
 
   @Native<Void Function(Pointer<Void>, Int32, Bool, Bool)>(
-      symbol: 'sojet::barcode::Barcode::setDataType', isLeaf: true)
+      symbol: 'sojet::barcode::Barcode::setDataType')
   external void _setDataType(int dataType,bool gs1NoCheck, bool parseEscapes);
 
   void setDataType(BarcodeDataType dataType,{bool gs1NoCheck = false, bool parseEscapes = false}) {
     _setDataType(dataType.index,gs1NoCheck,parseEscapes);
+  }
+
+  @Native<Void Function(Pointer<Void>, Int32)>(
+      symbol: 'sojet::barcode::Barcode::setVersion')
+  external void _setVersion(int version);
+
+  void setVersion(int version) {
+    _setVersion(version);
+  }
+
+  @Native<Void Function(Pointer<Void>, Int32)>(
+      symbol: 'sojet::barcode::Barcode::setECLevel')
+  external void _setECLevel(int level);
+
+  void setECLevel(int level) {
+    _setECLevel(level);
   }
 
   // void setBarcodePaint(Paint paint) {

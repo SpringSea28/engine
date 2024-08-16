@@ -10,6 +10,18 @@ class HanXin : public SkiaBarcode {
  public:
   HanXin(float barHeight, float xdimension);
   ~HanXin(){};
+
+
+  int getECLevel();
+
+
+  void setECLevel(int level);
+
+
+  int getVersion();
+
+
+  void setVersion(int version);
 };
 
 }  // namespace barcode

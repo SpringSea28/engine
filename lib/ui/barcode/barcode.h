@@ -216,6 +216,9 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
    */
   void setPaint(const SkPaint& paint);
 
+  void setVersion(int version);
+  void setECLevel(int level);
+
   void setCanvas(flutter::Canvas* canvas, double x, double y);
 
   void setTextStyle(const tonic::Int32List& encoded,
@@ -250,6 +253,7 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
   BarcodeStyle m_barcode_style;
   txt::TextStyle m_text_style;
   std::unique_ptr<sojet::barcode::SkiaBarcode> m_skia_barcode;
+  int m_barcode_type;
 };
 
 } // namespace barcode

@@ -143,6 +143,8 @@ Barcode::Barcode(const tonic::Int32List& encoded,
                  int barcode_type) {
   FML_LOG(ERROR) << "Barcode::Barcode barcode_type: "
                 << barcode_type;
+
+  m_barcode_type = barcode_type;
   if(x_dimension != 0){
     bar_height = bar_height/x_dimension;
   }
@@ -244,6 +246,7 @@ int Barcode::getDataType() {
 }
 
 void Barcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes) {
+  FML_LOG(ERROR) << "Barcode::setDataType escaped: " << bParseEscapes;
   m_skia_barcode->setDataType(dataType, bGS1NoCheck, bParseEscapes);
 }
 
@@ -347,6 +350,32 @@ void Barcode::setFont(const SkFont& font) {
 
 void Barcode::setPaint(const SkPaint& paint) {
   m_skia_barcode->setPaint(paint);
+}
+
+void Barcode::setVersion(int version) {
+  if(m_barcode_type == BarcodeType::kDataMatrix){
+    static_cast<DataMatrix*>(m_skia_barcode.get())->setVersion(version);
+  } else if(m_barcode_type == BarcodeType::kGridMatrix){
+    static_cast<GridMatrix*>(m_skia_barcode.get())->setVersion(version);
+  }else if(m_barcode_type == BarcodeType::kPdf417){
+    static_cast<Pdf417*>(m_skia_barcode.get())->setDataColumns(version);
+  }else if(m_barcode_type == BarcodeType::kQRCode){
+    static_cast<QRCode*>(m_skia_barcode.get())->setVersion(version);
+  }else if(m_barcode_type == BarcodeType::kHanXin){
+    static_cast<HanXin*>(m_skia_barcode.get())->setVersion(version);
+  }
+}
+
+void Barcode::setECLevel(int level) {
+  if(m_barcode_type == BarcodeType::kGridMatrix){
+    static_cast<GridMatrix*>(m_skia_barcode.get())->setECLevel(level);
+  }else if(m_barcode_type == BarcodeType::kPdf417){
+    static_cast<Pdf417*>(m_skia_barcode.get())->setECLevel(level);
+  }else if(m_barcode_type == BarcodeType::kQRCode){
+    static_cast<QRCode*>(m_skia_barcode.get())->setECLevel(level);
+  }else if(m_barcode_type == BarcodeType::kHanXin){
+    static_cast<HanXin*>(m_skia_barcode.get())->setECLevel(level);
+  }
 }
 
 void Barcode::setCanvas(flutter::Canvas* canvas, double x, double y) {
