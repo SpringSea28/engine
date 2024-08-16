@@ -334,6 +334,15 @@ base class Barcode extends NativeFieldWrapperClass1 {
     _setECLevel(level);
   }
 
+
+  @Native<Void Function(Pointer<Void> ,Bool)>(
+      symbol: 'sojet::barcode::Barcode::setGSSeparator')
+  external void _setGSSeparator(bool gsSeparator);
+
+  void setGSSeparator(bool gsSeparator) {
+    _setGSSeparator(gsSeparator);
+  }
+
   // void setBarcodePaint(Paint paint) {
   //   _setBarcodePaint(paint._objects, paint._data);
   // }

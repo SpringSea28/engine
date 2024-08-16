@@ -246,6 +246,8 @@ int Barcode::getDataType() {
 }
 
 void Barcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes) {
+  FML_LOG(ERROR) << "Barcode::setDataType dataType: " << dataType;
+  FML_LOG(ERROR) << "Barcode::setDataType GS1NoCheck: " << bGS1NoCheck;
   FML_LOG(ERROR) << "Barcode::setDataType escaped: " << bParseEscapes;
   m_skia_barcode->setDataType(dataType, bGS1NoCheck, bParseEscapes);
 }
@@ -375,6 +377,12 @@ void Barcode::setECLevel(int level) {
     static_cast<QRCode*>(m_skia_barcode.get())->setECLevel(level);
   }else if(m_barcode_type == BarcodeType::kHanXin){
     static_cast<HanXin*>(m_skia_barcode.get())->setECLevel(level);
+  }
+}
+
+void Barcode::setGSSeparator(bool gsSep) {
+  if(m_barcode_type == BarcodeType::kDataMatrix){
+    static_cast<DataMatrix*>(m_skia_barcode.get())->setGSSeparator(gsSep);
   }
 }
 

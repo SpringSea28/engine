@@ -322,6 +322,7 @@ typedef CanvasPath Path;
   V(sojet::barcode::Barcode,setDataType)            \
   V(sojet::barcode::Barcode,setVersion)             \
   V(sojet::barcode::Barcode,setECLevel)             \
+  V(sojet::barcode::Barcode,setGSSeparator)         \
   V(sojet::barcode::Barcode,dispose)
 
 #ifdef IMPELLER_ENABLE_3D

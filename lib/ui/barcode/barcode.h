@@ -218,6 +218,7 @@ class Barcode : public flutter::RefCountedDartWrappable<Barcode> {
 
   void setVersion(int version);
   void setECLevel(int level);
+  void setGSSeparator(bool gsSep);
 
   void setCanvas(flutter::Canvas* canvas, double x, double y);
 
