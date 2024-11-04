@@ -310,12 +310,12 @@ base class Barcode extends NativeFieldWrapperClass1 {
   external double getHeight();
 
 
-  @Native<Void Function(Pointer<Void>, Int32, Bool, Bool)>(
+  @Native<Void Function(Pointer<Void>, Int32, Bool, Bool, Bool)>(
       symbol: 'sojet::barcode::Barcode::setDataType')
-  external void _setDataType(int dataType,bool gs1NoCheck, bool parseEscapes);
+  external void _setDataType(int dataType,bool gs1NoCheck, bool parseEscapes,bool bGS1Parens);
 
-  void setDataType(BarcodeDataType dataType,{bool gs1NoCheck = false, bool parseEscapes = false}) {
-    _setDataType(dataType.index,gs1NoCheck,parseEscapes);
+  void setDataType(BarcodeDataType dataType,{bool gs1NoCheck = false, bool parseEscapes = false, bool bGS1Parens = false}) {
+    _setDataType(dataType.index,gs1NoCheck,parseEscapes,bGS1Parens);
   }
 
   @Native<Void Function(Pointer<Void>, Int32)>(
@@ -341,6 +341,22 @@ base class Barcode extends NativeFieldWrapperClass1 {
 
   void setGSSeparator(bool gsSeparator) {
     _setGSSeparator(gsSeparator);
+  }
+
+  @Native<Void Function(Pointer<Void>, Int32)>(
+      symbol: 'sojet::barcode::Barcode::setCode25Mode')
+  external void _setCode25Mode(int mode);
+
+  void setCode25Mode(int mode) {
+    _setCode25Mode(mode);
+  }
+
+  @Native<Void Function(Pointer<Void> ,Bool)>(
+      symbol: 'sojet::barcode::Barcode::setCode39CheckDigit')
+  external void _setCode39CheckDigit(bool en);
+
+  void setCode39CheckDigit(bool en) {
+    _setCode39CheckDigit(en);
   }
 
   // void setBarcodePaint(Paint paint) {

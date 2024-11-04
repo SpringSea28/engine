@@ -581,14 +581,14 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
 //             " fRuns[0].fAdvance.fX=%f\n"
 //             " maxWidth=%f\n"
 //             " text=%s\n"
-//             , __func__, __LINE__, 
-//             fHasLineBreaks, 
-//             fHasWhitespacesInside, 
-//             fPlaceholders.size(), 
-//             fRuns.size(), 
-//             fRuns[0].fAdvance.fX, 
+//             , __func__, __LINE__,
+//             fHasLineBreaks,
+//             fHasWhitespacesInside,
+//             fPlaceholders.size(),
+//             fRuns.size(),
+//             fRuns[0].fAdvance.fX,
 //             maxWidth,
-//             this->text().data()); 
+//             this->text().data());
 	    
     if (!fHasLineBreaks &&
 		// commented out by sojet start >>>
@@ -609,7 +609,8 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
         auto advance = run.advance();
         auto textRange = TextRange(0, this->text().size());
         auto textExcludingSpaces = TextRange(0, fTrailingSpaces);
-        InternalLineMetrics metrics(this->strutForceHeight());
+//        InternalLineMetrics metrics(this->strutForceHeight());
+        InternalLineMetrics metrics;
         metrics.add(&run);
         auto disableFirstAscent = this->paragraphStyle().getTextHeightBehavior() &
                                   TextHeightBehavior::kDisableFirstAscent;
@@ -645,10 +646,100 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
 
 		// add by sojet start >>>
 		SkFont font(run.font());
-        font.setEdging(SkFont::Edging::kAntiAlias);
+//        SkFontMetrics skFontMetrics;
+//        font.getMetrics(&skFontMetrics);
+//        SkScalar position;
+//        bool hasPosition = skFontMetrics.hasUnderlinePosition(&position);
+//        SkScalar thickness;
+//        bool hasThickness = skFontMetrics.hasUnderlineThickness(&thickness);
+//        if(hasThickness && hasPosition) {
+//            SkDebugf("%s:%d  underlinePosition=%f underlineThickness=%f>>>>>>>>>>\n",
+//                     __func__,
+//                     __LINE__,
+//                     position,
+//                     thickness);
+//        }
+
+//        font.setEdging(SkFont::Edging::kAntiAlias);
+        font.setEdging(SkFont::Edging::kAlias);
+
+//        bool isLinearMetrics = font.isLinearMetrics();
+//        SkDebugf("%s:%d  text: %s isLinearMetrics=%d >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), isLinearMetrics);
+
+//        SkFontHinting skFontHinting = font.getHinting();
+//        SkDebugf("%s:%d  text: %s skFontHinting=%d >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), static_cast<int>(skFontHinting));
+//        font.setHinting(SkFontHinting::kNone);
+//        SkDebugf("%s:%d  text: %s skFontHinting=%d >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), static_cast<int>(font.getHinting()));
+//
+//        SkFontStyle skFontStyle = this->paragraphStyle().getTextStyle().getFontStyle();
+//        SkDebugf("%s:%d  text: %s skFontStyle.slant()=%d >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), skFontStyle.slant());
+//        if(skFontStyle.slant() == SkFontStyle::Slant::kItalic_Slant){
+//            font.setSkewX(-0.25);
+//        }
+//        bool isItalic = font.getTypeface()->isItalic();
+//        SkDebugf("%s:%d  text: %s isItalic=%d >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), isItalic);
+
+//        SkPaint skPaintP = this->paragraphStyle().getTextStyle().getForeground();
+//
+//        SkDebugf("%s:%d  text: %s from paragraphStyle skPaint stoke with =%f   skPaint type =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), skPaintP.getStrokeWidth(),skPaintP.getStyle());
+//        SkDebugf("%s:%d  text: %s from paragraphStyle getFontSize =%f>>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(),this->paragraphStyle().getTextStyle().getFontSize());
+//        SkDebugf("%s:%d  text: %s from paragraphStyle getColor =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(),skPaintP.getColor());
+//
+//        SkPaint skPaint  = SkPaint();
+//        SkDebugf("%s:%d  text: %s textStyle size =%d  >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), this -> fTextStyles.size());
+//        if(this -> fTextStyles.size() > 0){
+//            skPaint = this -> fTextStyles[this -> fTextStyles.size() -1 ].fStyle.getForeground();
+//            SkDebugf("%s:%d  text: %s from textStyle skPaint stoke with =%f   skPaint type =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(), skPaint.getStrokeWidth(),skPaint.getStyle());
+//            SkDebugf("%s:%d  text: %s from textStyle getFontSize =%f>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(),this -> fTextStyles[this -> fTextStyles.size() -1 ].fStyle.getFontSize());
+//            SkDebugf("%s:%d  text: %s from textStyle getColor =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(),skPaint.getColor());
+//        }
+//
+//        SkDebugf("%s:%d  text: %s fForegroundStyles size =%d  >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), this -> fForegroundStyles.size());
+//        if(this->fForegroundStyles.size() > 0){
+//            skPaint = this->fForegroundStyles[0].fStyle;
+//            SkDebugf("%s:%d  text: %s from fForegroundStyles skPaint stoke with =%f   skPaint type =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(), skPaint.getStrokeWidth(),skPaint.getStyle());
+//        }
+//
+//        SkDebugf("%s:%d  text: %s styles size =%d  >>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), this->styles().size());
+//        if(this->styles().size() > 0){
+//            Block* bloc = this->styles().begin();
+//            skPaint = bloc->fStyle.getForeground();
+//            SkDebugf("%s:%d  text: %s from styles skPaint stoke with =%f   skPaint type =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(), skPaint.getStrokeWidth(),skPaint.getStyle());
+//
+//            SkDebugf("%s:%d  text: %s from styles getFontSize =%f>>>>>>>>>>\n", __func__, __LINE__,
+//                     this->text().data(), bloc->fStyle.getFontSize());
+//        }
+
+//        bloc = this->styles().end();
+//        skPaint = bloc->fStyle.getForeground();
+//        SkDebugf("%s:%d  text: %s from styles last skPaint stoke with =%f   skPaint type =%d>>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), skPaint.getStrokeWidth(),skPaint.getStyle());
+
+
 		textLine.fRunAdvanceWidth = font.measureText(this->text().data(), this->text().size(), SkTextEncoding::kUTF8, &textLine.fRunBounds);
-		//SkDebugf("%s:%d  text: %s advanceWidth=%f (%f, %f, %f, %f)>>>>>>>>>>\n", __func__, __LINE__, 
-		//	this->text().data(), textLine.fRunAdvanceWidth, textLine.fRunBounds.fLeft, textLine.fRunBounds.fTop, textLine.fRunBounds.width(), textLine.fRunBounds.height());
+//		SkDebugf("%s:%d  text: %s advanceWidth=%f (%f, %f, %f, %f)>>>>>>>>>>\n", __func__, __LINE__,
+//			this->text().data(), textLine.fRunAdvanceWidth, textLine.fRunBounds.fLeft, textLine.fRunBounds.fTop, textLine.fRunBounds.width(), textLine.fRunBounds.height());
+//        if(hasPosition && hasThickness){
+//            textLine.fRunBounds.fBottom = position + thickness;
+//        }
+//        SkDebugf("%s:%d  text: %s advanceWidth=%f (%f, %f, %f, %f)>>>>>>>>>>\n", __func__, __LINE__,
+//                 this->text().data(), textLine.fRunAdvanceWidth, textLine.fRunBounds.fLeft, textLine.fRunBounds.fTop, textLine.fRunBounds.width(), textLine.fRunBounds.height());
 		// <<< add by sojet end
 
         fLongestLine = nearlyZero(advance.fX) ? run.advance().fX : advance.fX;
@@ -680,6 +771,11 @@ void ParagraphImpl::breakShapedTextIntoLines(SkScalar maxWidth) {
                 bool addEllipsis) {
                 // TODO: Take in account clipped edges
                 auto& line = this->addLine(offset, advance, textExcludingSpaces, text, textWithNewlines, clusters, clustersWithGhosts, widthWithSpaces, metrics);
+                // add by sojet start >>>
+                auto& run = this->fRuns[0];
+                SkFont font(run.font());
+                line.fRunAdvanceWidth = font.measureText(this->text().data(), this->text().size(), SkTextEncoding::kUTF8, &line.fRunBounds);
+                // <<< add by sojet end
                 if (addEllipsis) {
                     line.createEllipsis(maxWidth, this->getEllipsis(), true);
                 }

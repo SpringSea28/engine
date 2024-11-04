@@ -91,8 +91,9 @@ public:
     * @param dataType： DATA_MODE(Binary):0  UNICODE_MODE(UTF-8):1  GS1_MODE(GS1):2
     * @param bGS1NoCheck： true:不校验GS1数据格式               false:校验GS1数据格式
     * @param bParseEscapes true:解析转义字符                  false:不解析转义字符
+    * @param bGS1Parens  true:Ai标识符（）括号                  false:Ai标识符 [] 括号
     */
-    void setDataType(int dataType, bool bGS1NoCheck = false, bool bParseEscapes  = false);
+    void setDataType(int dataType, bool bGS1NoCheck = false, bool bParseEscapes  = false, bool bGS1Parens = false);
 
     /**
     * 获取条码两边的空白区域宽度

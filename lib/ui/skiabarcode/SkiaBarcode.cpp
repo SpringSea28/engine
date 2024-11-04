@@ -21,6 +21,8 @@
 #include "third_party/skia/modules/skparagraph/include/Metrics.h"
 #include "flutter/display_list/dl_color.h"
 
+#include "flutter/fml/logging.h"
+
 std::unique_ptr<txt::Paragraph> createParagraph(const char* text, const txt::TextStyle& text_style);
 
 using namespace sojet::barcode;
@@ -1000,15 +1002,24 @@ int SkiaBarcode::getDataType() {
     return symbol->input_mode & 0x07;
 }
 
-void SkiaBarcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes) {
-    symbol->input_mode = dataType;
-    if(dataType == GS1_MODE && bGS1NoCheck) {
-        symbol->input_mode |= GS1NOCHECK_MODE;
-    }
+void SkiaBarcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes, bool bGS1Parens) {
+//  FML_LOG(ERROR) << "SkiaBarcode::setDataType dataType: " << dataType;
+//  FML_LOG(ERROR) << "SkiaBarcode::setDataType bGS1NoCheck: " << bGS1NoCheck;
+//  FML_LOG(ERROR) << "SkiaBarcode::setDataType bParseEscapes: " << bParseEscapes;
+//  FML_LOG(ERROR) << "SkiaBarcode::setDataType bGS1Parens: " << bGS1Parens;
+  symbol->input_mode = dataType;
+  if(dataType == GS1_MODE && bGS1NoCheck) {
+    symbol->input_mode |= GS1NOCHECK_MODE;
+  }
 
-    if(bParseEscapes) {
-        symbol->input_mode |= ESCAPE_MODE;
-    }
+  if(bParseEscapes) {
+    symbol->input_mode |= ESCAPE_MODE;
+  }
+
+  if(bGS1Parens) {
+    FML_LOG(ERROR) << "SkiaBarcode::setDataType bGS1Parens 222: " << bGS1Parens;
+    symbol->input_mode |= GS1PARENS_MODE;
+  }
 }
 
 float SkiaBarcode::getBarHeight() {
@@ -1101,6 +1112,9 @@ void SkiaBarcode::setPaint(const SkPaint& paint) {
 }
 
 int SkiaBarcode::encode(const char* text, int length) {
+//  FML_LOG(ERROR) << "encode version: " << ZBarcode_Version();
+//    FML_LOG(ERROR) << "encode text: " << text;
+//    FML_LOG(ERROR) << "symbol->input_mode: " << (symbol->input_mode & GS1PARENS_MODE);
     clearBarcode();
     return native_encode(text, length);
 }
@@ -1118,19 +1132,29 @@ const char* SkiaBarcode::getErrorInfo() {
 }
 
 int SkiaBarcode::native_encode(const char* text, int length) {
-    if(symbol->input_mode & GS1_MODE) {
-        std::string temp = text;
-        replace(temp.begin(), temp.end(), '(', '[');
-        replace(temp.begin(), temp.end(), ')', ']');
-
-        if(symbol->symbology == BARCODE_CODE128) {
-            symbol->symbology = BARCODE_GS1_128;
-        }
-		return encodeAndBufferVector((unsigned char*)temp.c_str(),length);
+  if(symbol->input_mode & GS1_MODE) {
+    if(symbol->symbology == BARCODE_CODE128) {
+      symbol->symbology = BARCODE_GS1_128;
     }
+  }
 
-    return encodeAndBufferVector((unsigned char*)text,length);
+  return encodeAndBufferVector((unsigned char*)text,length);
 }
+
+//int SkiaBarcode::native_encode(const char* text, int length) {
+//    if(symbol->input_mode & GS1_MODE) {
+//        std::string temp = text;
+//        replace(temp.begin(), temp.end(), '(', '[');
+//        replace(temp.begin(), temp.end(), ')', ']');
+//
+//        if(symbol->symbology == BARCODE_CODE128) {
+//            symbol->symbology = BARCODE_GS1_128;
+//        }
+//		return encodeAndBufferVector((unsigned char*)temp.c_str(),length);
+//    }
+//
+//    return encodeAndBufferVector((unsigned char*)text,length);
+//}
 
 void SkiaBarcode::setTextHeight(int iTextHeight) {
     m_iTextHeight = iTextHeight;
@@ -1139,7 +1163,10 @@ void SkiaBarcode::setTextHeight(int iTextHeight) {
 int SkiaBarcode::encodeAndBufferVector(unsigned char *input, int length) {
     int error_number;
 
+//    FML_LOG(ERROR) << "encodeAndBufferVector: " << input;
+//    FML_LOG(ERROR) << "encodeAndBufferVector length: " << length;
     error_number = ZBarcode_Encode(symbol, input, length);
+//    FML_LOG(ERROR) << "encodeAndBufferVector error_number: " << error_number;
     if (error_number >= ZINT_ERROR) {
         return error_number;
     }
@@ -1957,7 +1984,6 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
 //        x = 0;
 //    }
 //    y += bounds.height();       //根据文本实际高度，获取文本底部的值
-
     if(m_display_list_builder){
 //      FML_LOG(ERROR) << "drawString: " << text;
       txt::TextStyle copyTextStyle = m_text_style;
@@ -1966,7 +1992,7 @@ void SkiaBarcode::drawString(const char* text, float x, float y, float width, fl
       if(paragraph == nullptr){
         return;
       }
-//      FML_LOG(ERROR) << "drawString: ";
+//      FML_LOG(ERROR) << "drawString Layout: ";
 //      FML_LOG(ERROR) << "m_fBarcodeWidth: " << m_fBarcodeWidth;
       paragraph->Layout(INFINITY);
 //      FML_LOG(ERROR) << "Layout: ";

@@ -245,11 +245,12 @@ int Barcode::getDataType() {
   return m_skia_barcode->getDataType();
 }
 
-void Barcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes) {
-  FML_LOG(ERROR) << "Barcode::setDataType dataType: " << dataType;
-  FML_LOG(ERROR) << "Barcode::setDataType GS1NoCheck: " << bGS1NoCheck;
-  FML_LOG(ERROR) << "Barcode::setDataType escaped: " << bParseEscapes;
-  m_skia_barcode->setDataType(dataType, bGS1NoCheck, bParseEscapes);
+void Barcode::setDataType(int dataType, bool bGS1NoCheck, bool bParseEscapes, bool bGS1Parens) {
+//  FML_LOG(ERROR) << "Barcode::setDataType dataType: " << dataType;
+//  FML_LOG(ERROR) << "Barcode::setDataType GS1NoCheck: " << bGS1NoCheck;
+//  FML_LOG(ERROR) << "Barcode::setDataType escaped: " << bParseEscapes;
+//    FML_LOG(ERROR) << "Barcode::setDataType bGS1Parens: " << bGS1Parens;
+  m_skia_barcode->setDataType(dataType, bGS1NoCheck, bParseEscapes ,bGS1Parens);
 }
 
 float Barcode::getBarHeight() {
@@ -338,7 +339,8 @@ int Barcode::encode(const std::u16string& text, int length) {
 
   // 获取 const char* 指向 utf8Text
   const char* cStyleString = utf8Text.c_str();
-
+//  FML_LOG(ERROR) << "encode: " << cStyleString;
+//  FML_LOG(ERROR) << "length: " << length;
   return m_skia_barcode->encode(cStyleString, length);
 }
 
@@ -386,6 +388,18 @@ void Barcode::setGSSeparator(bool gsSep) {
   }
 }
 
+void Barcode::setCode25Mode(int mode) {
+  if(m_barcode_type == BarcodeType::kCode25){
+    static_cast<Code25*>(m_skia_barcode.get())->setMode(mode);
+  }
+}
+
+void Barcode::setCode39CheckDigit(bool en) {
+  if(m_barcode_type == BarcodeType::kCode39){
+    static_cast<Code39*>(m_skia_barcode.get())->setCheckDigit(en);
+  }
+}
+
 void Barcode::setCanvas(flutter::Canvas* canvas, double x, double y) {
   if (!canvas) {
     // disposed.
@@ -394,7 +408,7 @@ void Barcode::setCanvas(flutter::Canvas* canvas, double x, double y) {
 
   flutter::DisplayListBuilder* builder = canvas->builder();
   if (builder) {
-    FML_LOG(ERROR) << "Canvas builder: ";
+//    FML_LOG(ERROR) << "Canvas builder: ";
     m_skia_barcode->setCanvas(builder);
   }
 }
@@ -585,8 +599,8 @@ void Barcode::setTextStyle(const tonic::Int32List& encoded,
     decodeFontVariations(font_variations_data, style.font_variations);
   }
 
-  FML_LOG(ERROR) << "Barcode::setTextStyle color: " << style.color;
-  FML_LOG(ERROR) << "Barcode::setTextStyle fontSize: " << style.font_size;
+//  FML_LOG(ERROR) << "Barcode::setTextStyle color: " << style.color;
+//  FML_LOG(ERROR) << "Barcode::setTextStyle fontSize: " << style.font_size;
 
   this->m_text_style = style;
   m_skia_barcode->setTextStyle(m_text_style);
@@ -656,22 +670,22 @@ void Barcode::setBarcodeStyle(const tonic::Int32List& encoded,
     }
   }
 
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bar_height: "
-                 << style.bar_height;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle x_dimension: "
-                 << style.x_dimension;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_width: "
-                 << style.quiet_zone_width;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_height: "
-                 << style.quiet_zone_height;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle human_readable_location: "
-                 << style.human_readable_location;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle text_margin: "
-                 << style.text_margin;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bearer_bar_type: "
-                 << style.bearer_bar_type;
-  FML_LOG(ERROR) << "Barcode::setBarcodeStyle thickness: "
-                 << style.thickness;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bar_height: "
+//                 << style.bar_height;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle x_dimension: "
+//                 << style.x_dimension;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_width: "
+//                 << style.quiet_zone_width;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle quiet_zone_height: "
+//                 << style.quiet_zone_height;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle human_readable_location: "
+//                 << style.human_readable_location;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle text_margin: "
+//                 << style.text_margin;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle bearer_bar_type: "
+//                 << style.bearer_bar_type;
+//  FML_LOG(ERROR) << "Barcode::setBarcodeStyle thickness: "
+//                 << style.thickness;
   m_barcode_style = style;
   setXDimensions(m_barcode_style.x_dimension);
   setBarHeight(m_barcode_style.bar_height);

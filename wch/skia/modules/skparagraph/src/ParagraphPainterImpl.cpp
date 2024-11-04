@@ -41,6 +41,7 @@ CanvasParagraphPainter::CanvasParagraphPainter(SkCanvas* canvas)
 
 void CanvasParagraphPainter::drawTextBlob(const sk_sp<SkTextBlob>& blob, SkScalar x, SkScalar y, const SkPaintOrID& paint) {
     SkASSERT(std::holds_alternative<SkPaint>(paint));
+	SkDebugf("%s:%d  %f %f >>>>>>>>>>\n", __func__, __LINE__, x, y);
     fCanvas->drawTextBlob(blob, x, y, std::get<SkPaint>(paint));
 }
 
